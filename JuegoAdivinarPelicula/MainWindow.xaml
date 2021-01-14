@@ -5,26 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JuegoAdivinarPelicula"
         mc:Ignorable="d"
-        Title="Adivinar Película" MinHeight="575" Height="575" MinWidth="800" Width="800">
+        Title="Adivina la película" MinHeight="650" Height="650" MinWidth="800" Width="800">
 
     <Window.Resources>
 
+        <local:ConversorGeneroPista x:Key="conversorGeneroPista"></local:ConversorGeneroPista>
+
         <DataTemplate DataType="{x:Type local:Pelicula}">
-            <Grid Width="100" Height="100">
-                <Image Width="50" Source="{Binding Imagen}" />
-                <Viewbox>
-                    <TextBlock Text="{Binding Nombre}" />
+            <DockPanel Width="100" Height="100">
+                <Image DockPanel.Dock="Top" Width="100" Source="{Binding Imagen, UpdateSourceTrigger=PropertyChanged}" />
+                <Viewbox DockPanel.Dock="Bottom">
+                    <TextBlock Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}" />
                 </Viewbox>
-                
-            </Grid>
+
+            </DockPanel>
         </DataTemplate>
         
     </Window.Resources>
     
-    <Grid>
+    <Grid Background="SkyBlue">
         <TabControl Margin="5">            
             <TabItem Header="Jugar">
-                <Grid>
+                <Grid x:Name="jugarPartida">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
@@ -35,40 +37,68 @@
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <DockPanel Margin="15" Grid.Column="0">
-                        <TextBlock DockPanel.Dock="Top">Cartel de la película</TextBlock>
-                        <Image Margin="10"></Image>
-                    </DockPanel>
-
-                    <DockPanel Margin="15" Grid.Column="1">
-
-
-                        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                            <TextBlock HorizontalAlignment="Left" DockPanel.Dock="Top">Puntuación Total</TextBlock>
-                            <Border BorderBrush="Black" BorderThickness="1" Width="150" Height="75"></Border>
-                            <Button DockPanel.Dock="Bottom" Height="20" Margin="15">Nueva Partida</Button>
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="0,0,2,0" >
+                        <DockPanel Margin="15">
+                            <TextBlock DockPanel.Dock="Top">Cartel de la película</TextBlock>
+                            <Image Margin="10" Source="{Binding Imagen}"></Image>
                         </DockPanel>
+                    </Border>
 
-                        <DockPanel DockPanel.Dock="Top" Margin="0,50,0,0">
-                            <TextBlock HorizontalAlignment="Left" DockPanel.Dock="Top">Título de la película</TextBlock>
-                            <Button DockPanel.Dock="Right" Height="20" Width="50">Validar</Button>
-                            <TextBox Height="20" Margin="0,0,15,0" DockPanel.Dock="Left"></TextBox>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="2,0,0,0">
+                        <DockPanel Margin="15">
+
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                                <TextBlock HorizontalAlignment="Left" DockPanel.Dock="Top">Puntuación Total</TextBlock>
+                                <Border BorderBrush="Black" BorderThickness="1" Width="150" Height="75">
+                                    <Viewbox>
+                                        <TextBlock x:Name="puntuacion"></TextBlock>
+                                    </Viewbox>
+                                </Border>
+                                <Button DockPanel.Dock="Bottom" Height="20" Margin="15" Click="NuevaPartida_Click">Nueva Partida</Button>
+                            </DockPanel>
+
+                            <DockPanel DockPanel.Dock="Top" Margin="0,50,0,0">
+                                <TextBlock HorizontalAlignment="Left" DockPanel.Dock="Top">Título de la película</TextBlock>
+                                <Button DockPanel.Dock="Right" Height="20" Width="50" Click="Validar_Click">Validar</Button>
+                                <TextBox x:Name="nombreComprobar" Height="20" Margin="0,0,15,0" DockPanel.Dock="Left"></TextBox>
+                            </DockPanel>
+
+                            <DockPanel DockPanel.Dock="Top" Margin="0,25,0,0">
+                                <CheckBox Content="Ver pista" DockPanel.Dock="Top" />
+                                <TextBlock>Esto es la pista</TextBlock>
+                            </DockPanel>
+
+                            <DockPanel DockPanel.Dock="Top"  Margin="0,25,0,0" LastChildFill="False">
+                                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center">Género</TextBlock>
+                                <Image DockPanel.Dock="Top" Margin="0,10,0,0" Width="250" Height="175" Source="{Binding GeneroPro, Converter={StaticResource conversorGeneroPista}}" />
+                            </DockPanel>
+
                         </DockPanel>
+                    </Border>
 
-                        <DockPanel DockPanel.Dock="Top" Margin="0,25,0,0">
-                            <CheckBox Content="Ver pista" DockPanel.Dock="Top" />
-                            <TextBlock>Esto es la pista</TextBlock>
+                    <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0,4,2,0">
+                        <DockPanel LastChildFill="False">
+                            <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" FontSize="25" Margin="5,0,10,0">1</TextBlock>
+                            <Image Source="assets/arrow.png" Width="45" DockPanel.Dock="Right"/>
                         </DockPanel>
+                    </Border>
 
-                        <TextBlock VerticalAlignment="Center">Género:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">El género</TextBlock>
-
-                    </DockPanel>
+                    <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="2,4,0,0">
+                        <DockPanel LastChildFill="False">
+                            <TextBlock x:Name="numPeliculas" DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="25" Margin="5,0,10,0"></TextBlock>
+                            <Image Source="assets/arrow.png" Width="45" DockPanel.Dock="Left">
+                                <Image.LayoutTransform>
+                                    <RotateTransform Angle="180"/>
+                                </Image.LayoutTransform>
+                            </Image>
+                        </DockPanel>
+                    </Border>
+                    
                 </Grid>
             </TabItem>
             
             <TabItem Header="Gestionar">
-                <Grid x:Name="Pelis">
+                <Grid Background="LightYellow">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
@@ -79,7 +109,8 @@
                         <RowDefinition Height="0.75*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <ListBox Grid.Column="0" Grid.Row="0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5" ItemsSource="{Binding}">
+                    <ListBox Grid.Column="0" Grid.Row="0" x:Name="Pelis"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5" ItemsSource="{Binding}">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel></WrapPanel>
@@ -88,14 +119,14 @@
                     </ListBox>
 
                     <DockPanel Grid.Column="1" Grid.Row="0" LastChildFill="False">
-                        <Button Content="Cargar de Json" DockPanel.Dock="Top" Margin="5"/> 
-                        <Button Content="Guardar en Json" DockPanel.Dock="Top" Margin="5" />
+                        <Button Click="Cargar_Click" Content="Cargar de Json" DockPanel.Dock="Top" Margin="5"/>
+                        <Button Click="Guardar_Click" Content="Guardar en Json" DockPanel.Dock="Top" Margin="5" />
                         <Button Content="INVISIBLE" DockPanel.Dock="Top" Visibility="Hidden" />
-                        <Button Content="Eliminar película" DockPanel.Dock="Top" Margin="5" />
-                        <Button Content="Añadir película" DockPanel.Dock="Top" Margin="5" />
+                        <Button Click="Eliminar_Click" Content="Eliminar película" DockPanel.Dock="Top" Margin="5" />
+                        <Button Click="Anyadir_Click" Content="Añadir película" DockPanel.Dock="Top" Margin="5" />
                     </DockPanel>
 
-                    <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Pelis, Path=SelectedItem}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition Width="4.25*"></ColumnDefinition>
@@ -112,9 +143,9 @@
                         <TextBlock VerticalAlignment="Center" Margin="5" Grid.Column="0" Grid.Row="1" MinHeight="20" MaxHeight="20">Pista de la película</TextBlock>
                         <TextBlock VerticalAlignment="Center" Margin="5" Grid.Column="0" Grid.Row="2" MinHeight="20" MaxHeight="20">Imagén de la película</TextBlock>
 
-                        <TextBox Grid.Column="1" Grid.Row="0" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
-                        <TextBox Grid.Column="1" Grid.Row="1" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
-                        <TextBox Grid.Column="1" Grid.Row="2" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
+                        <TextBox Text="{Binding Nombre}" Grid.Column="1" Grid.Row="0" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
+                        <TextBox Text="{Binding Pista}" Grid.Column="1" Grid.Row="1" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
+                        <TextBox Text="{Binding Imagen}" Grid.Column="1" Grid.Row="2" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
 
                         <Button Content="Examinar..." Margin="5" Grid.Column="2" Grid.Row="2" MinHeight="20" MaxHeight="20" />
 
@@ -122,12 +153,12 @@
 
                         <DockPanel Margin="5" Grid.Column="1" Grid.Row="3" LastChildFill="False">
                             <Grid DockPanel.Dock="Left">
-                                <RadioButton GroupName="SeleccionDificultad" Content="Fácil" VerticalAlignment="Top"></RadioButton>
-                                <RadioButton GroupName="SeleccionDificultad" Content="Normal" VerticalAlignment="Center"></RadioButton>
-                                <RadioButton GroupName="SeleccionDificultad" Content="Difícil" VerticalAlignment="Bottom"></RadioButton>
+                                <RadioButton IsChecked="{Binding Facil}" GroupName="SeleccionDificultad" Content="Fácil" VerticalAlignment="Top"></RadioButton>
+                                <RadioButton IsChecked="{Binding Normal}" GroupName="SeleccionDificultad" Content="Normal" VerticalAlignment="Center"></RadioButton>
+                                <RadioButton IsChecked="{Binding Dificil}" GroupName="SeleccionDificultad" Content="Difícil" VerticalAlignment="Bottom"></RadioButton>
                             </Grid>
 
-                            <ComboBox SelectedItem="{Binding Genero, UpdateSourceTrigger=PropertyChanged}" x:Name="GeneroSeleccionado" DockPanel.Dock="Right" MinWidth="100" Height="25"></ComboBox>
+                            <ComboBox SelectedItem="{Binding GeneroPro, UpdateSourceTrigger=PropertyChanged}" x:Name="GeneroSeleccionado" DockPanel.Dock="Right" MinWidth="100" Height="25"></ComboBox>
                             <TextBlock VerticalAlignment="Center" DockPanel.Dock="Right" Margin="10">Género</TextBlock>
                         </DockPanel>
                     </Grid>

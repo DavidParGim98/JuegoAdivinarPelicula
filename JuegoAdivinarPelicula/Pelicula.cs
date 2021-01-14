@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace JuegoAdivinarPelicula
 {
@@ -13,8 +14,14 @@ namespace JuegoAdivinarPelicula
         private string _nombre;
         private string _imagen;
         private string _pista;
-        private string _genero;
-        private int _dificultad;
+        private Genero _genero;
+        private bool _facil;
+        private bool _normal;
+        private bool _dificil;
+        public enum Genero
+        {
+            Comedia, Drama, Accion, Terror , Scifi
+        }
 
         public string Nombre
         {
@@ -57,7 +64,7 @@ namespace JuegoAdivinarPelicula
             }
         }
 
-        public string Genero
+        public Genero GeneroPro
         {
             get => _genero;
 
@@ -66,32 +73,74 @@ namespace JuegoAdivinarPelicula
                 if (this._genero != value)
                 {
                     this._genero = value;
-                    this.NotifyPropertyChanged("Genero");
+                    this.NotifyPropertyChanged("GeneroPro");
                 }
             }
         }
 
-        public int Dificultad
+        public bool Facil
         {
-            get => _dificultad;
+            get => _facil;
 
             set
             {
-                if (this._dificultad != value)
+                if (this._facil != value)
                 {
-                    this._dificultad = value;
-                    this.NotifyPropertyChanged("Dificultad");
+                    this._facil = value;
+                    this.NotifyPropertyChanged("Facil");
+                }
+            }
+        }
+        public bool Normal
+        {
+            get => _normal;
+
+            set
+            {
+                if (this._normal != value)
+                {
+                    this._normal = value;
+                    this.NotifyPropertyChanged("Normal");
+                }
+            }
+        }
+        public bool Dificil
+        {
+            get => _dificil;
+
+            set
+            {
+                if (this._dificil != value)
+                {
+                    this._dificil = value;
+                    this.NotifyPropertyChanged("Dificil");
                 }
             }
         }
 
-        public Pelicula(string nombre, string imagen, string pista, string genero, int dificultad)
+        public Pelicula(string nombre, string imagen, string pista, Genero genero, bool facil, bool normal, bool dificil)
         {
             Nombre = nombre;
             Imagen = imagen;
             Pista = pista;
-            Genero = genero;
-            Dificultad = dificultad;
+            GeneroPro = genero;
+            Facil = facil;
+            Normal = normal;
+            Dificil = dificil;
+        }
+
+        public static ObservableCollection<Genero> getListaGeneros()
+        {
+            ObservableCollection<Genero> generos = new ObservableCollection<Genero>();
+
+            var values = Enum.GetValues(typeof(Genero));
+
+            foreach (Genero item in values)
+            {
+                generos.Add(item);
+            }
+
+            return generos;
         }
 
         public Pelicula()
