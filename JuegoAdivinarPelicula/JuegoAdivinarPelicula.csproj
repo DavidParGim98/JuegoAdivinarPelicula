@@ -67,6 +67,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ConversorGeneroPista.cs" />
+    <Compile Include="ConvertirDificil.cs" />
+    <Compile Include="ConvertirNormal.cs" />
+    <Compile Include="ConvertirFacil.cs" />
+    <Compile Include="ConvertirBackgroundColor.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

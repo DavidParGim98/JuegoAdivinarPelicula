@@ -15,12 +15,15 @@ namespace JuegoAdivinarPelicula
         private string _imagen;
         private string _pista;
         private Genero _genero;
-        private bool _facil;
-        private bool _normal;
-        private bool _dificil;
+        private Dificultad _dificultad;
         public enum Genero
         {
             Comedia, Drama, Accion, Terror , Scifi
+        }
+
+        public enum Dificultad
+        { 
+            Facil, Normal, Dificil
         }
 
         public string Nombre
@@ -76,57 +79,29 @@ namespace JuegoAdivinarPelicula
                     this.NotifyPropertyChanged("GeneroPro");
                 }
             }
-        }
+        }        
 
-        public bool Facil
+        public Dificultad DificultadPro
         {
-            get => _facil;
+            get => _dificultad;
 
             set
             {
-                if (this._facil != value)
+                if (this._dificultad != value)
                 {
-                    this._facil = value;
-                    this.NotifyPropertyChanged("Facil");
-                }
-            }
-        }
-        public bool Normal
-        {
-            get => _normal;
-
-            set
-            {
-                if (this._normal != value)
-                {
-                    this._normal = value;
-                    this.NotifyPropertyChanged("Normal");
-                }
-            }
-        }
-        public bool Dificil
-        {
-            get => _dificil;
-
-            set
-            {
-                if (this._dificil != value)
-                {
-                    this._dificil = value;
-                    this.NotifyPropertyChanged("Dificil");
+                    this._dificultad = value;
+                    this.NotifyPropertyChanged("DificultadPro");
                 }
             }
         }
 
-        public Pelicula(string nombre, string imagen, string pista, Genero genero, bool facil, bool normal, bool dificil)
+        public Pelicula(string nombre, string imagen, string pista, Genero genero)
         {
             Nombre = nombre;
             Imagen = imagen;
             Pista = pista;
             GeneroPro = genero;
-            Facil = facil;
-            Normal = normal;
-            Dificil = dificil;
+            DificultadPro = 0;
         }
 
         public static ObservableCollection<Genero> getListaGeneros()

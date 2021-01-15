@@ -10,6 +10,10 @@
     <Window.Resources>
 
         <local:ConversorGeneroPista x:Key="conversorGeneroPista"></local:ConversorGeneroPista>
+        <local:ConvertirBackgroundColor x:Key="conversorColor"></local:ConvertirBackgroundColor>
+        <local:ConvertirFacil x:Key="conversorDFacil"></local:ConvertirFacil>
+        <local:ConvertirNormal x:Key="conversorDNormal"></local:ConvertirNormal>
+        <local:ConvertirDificil x:Key="conversorDDificil"></local:ConvertirDificil>
 
         <DataTemplate DataType="{x:Type local:Pelicula}">
             <DockPanel Width="100" Height="100">
@@ -20,6 +24,24 @@
 
             </DockPanel>
         </DataTemplate>
+
+        <Style TargetType="CheckBox" x:Key="pistaC">
+            <Setter Property="IsChecked" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="pistaT">
+            <Setter Property="Background" Value="Black" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=pistaCheck, Path=IsChecked}" Value="False">
+                    <Setter Property="Background" Value="Transparent" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         
     </Window.Resources>
     
@@ -37,10 +59,14 @@
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="0,0,2,0" >
-                        <DockPanel Margin="15">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="0,0,2,0" >                        
+                        <DockPanel Margin="15" Background="{Binding DificultadPro, Converter={StaticResource conversorColor}}">                            
                             <TextBlock DockPanel.Dock="Top">Cartel de la película</TextBlock>
-                            <Image Margin="10" Source="{Binding Imagen}"></Image>
+                            <Image Margin="10" Source="{Binding Imagen}">
+                                <Image.Effect>
+                                    <BlurEffect Radius="15" />
+                                </Image.Effect>
+                            </Image>
                         </DockPanel>
                     </Border>
 
@@ -64,8 +90,8 @@
                             </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" Margin="0,25,0,0">
-                                <CheckBox Content="Ver pista" DockPanel.Dock="Top" />
-                                <TextBlock>Esto es la pista</TextBlock>
+                                <CheckBox x:Name="pistaCheck" Content="Ver pista" DockPanel.Dock="Top" Style="{StaticResource pistaC}" />
+                                <TextBlock x:Name="pistaTexto" Text="{Binding Pista}" Style="{StaticResource pistaT}"></TextBlock>
                             </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top"  Margin="0,25,0,0" LastChildFill="False">
@@ -77,16 +103,17 @@
                     </Border>
 
                     <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0,4,2,0">
+                        
                         <DockPanel LastChildFill="False">
-                            <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" FontSize="25" Margin="5,0,10,0">1</TextBlock>
-                            <Image Source="assets/arrow.png" Width="45" DockPanel.Dock="Right"/>
+                            <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" x:Name="Menor" FontSize="25" Margin="5,0,10,0">0</TextBlock>
+                            <Image MouseDown="Menor_MouseDown" DockPanel.Dock="Right" Source="assets/arrow.png" Width="45" />
                         </DockPanel>
                     </Border>
 
                     <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="2,4,0,0">
                         <DockPanel LastChildFill="False">
-                            <TextBlock x:Name="numPeliculas" DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="25" Margin="5,0,10,0"></TextBlock>
-                            <Image Source="assets/arrow.png" Width="45" DockPanel.Dock="Left">
+                            <TextBlock x:Name="Mayor" DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="25" Margin="5,0,10,0"></TextBlock>
+                            <Image MouseDown="Mayor_MouseDown" Source="assets/arrow.png" Width="45" >
                                 <Image.LayoutTransform>
                                     <RotateTransform Angle="180"/>
                                 </Image.LayoutTransform>
@@ -98,7 +125,7 @@
             </TabItem>
             
             <TabItem Header="Gestionar">
-                <Grid Background="LightYellow">
+                <Grid Background="LightYellow" x:Name="formularioAnyadirPelicula">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
@@ -123,10 +150,10 @@
                         <Button Click="Guardar_Click" Content="Guardar en Json" DockPanel.Dock="Top" Margin="5" />
                         <Button Content="INVISIBLE" DockPanel.Dock="Top" Visibility="Hidden" />
                         <Button Click="Eliminar_Click" Content="Eliminar película" DockPanel.Dock="Top" Margin="5" />
-                        <Button Click="Anyadir_Click" Content="Añadir película" DockPanel.Dock="Top" Margin="5" />
+                        <Button Click="Anyadir_Click" Content="Añadir película" x:Name="anyadirPeliculaButton" DockPanel.Dock="Top" Margin="5" />
                     </DockPanel>
 
-                    <Grid Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Pelis, Path=SelectedItem}">
+                    <Grid Grid.Row="1"  Grid.ColumnSpan="2"  DataContext="{Binding ElementName=Pelis, Path=SelectedItem}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition Width="4.25*"></ColumnDefinition>
@@ -143,25 +170,26 @@
                         <TextBlock VerticalAlignment="Center" Margin="5" Grid.Column="0" Grid.Row="1" MinHeight="20" MaxHeight="20">Pista de la película</TextBlock>
                         <TextBlock VerticalAlignment="Center" Margin="5" Grid.Column="0" Grid.Row="2" MinHeight="20" MaxHeight="20">Imagén de la película</TextBlock>
 
-                        <TextBox Text="{Binding Nombre}" Grid.Column="1" Grid.Row="0" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
-                        <TextBox Text="{Binding Pista}" Grid.Column="1" Grid.Row="1" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
-                        <TextBox Text="{Binding Imagen}" Grid.Column="1" Grid.Row="2" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
+                        <TextBox x:Name="nombrePelicula" Text="{Binding Path=Nombre, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="0" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
+                        <TextBox x:Name="pistaPelicula" Text="{Binding Path=Pista, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="1" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
+                        <TextBox x:Name="imagenPelicula" Text="{Binding Path=Imagen, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2" Margin="5" MinHeight="20" MaxHeight="20"> </TextBox>
 
-                        <Button Content="Examinar..." Margin="5" Grid.Column="2" Grid.Row="2" MinHeight="20" MaxHeight="20" />
+                        <Button Content="Examinar..." Click="AnyadirImagen_Click" Margin="5" Grid.Column="2" Grid.Row="2" MinHeight="20" MaxHeight="20" />
 
                         <TextBlock Margin="5" Grid.Row="3">Nivel de dificultad</TextBlock>
 
                         <DockPanel Margin="5" Grid.Column="1" Grid.Row="3" LastChildFill="False">
                             <Grid DockPanel.Dock="Left">
-                                <RadioButton IsChecked="{Binding Facil}" GroupName="SeleccionDificultad" Content="Fácil" VerticalAlignment="Top"></RadioButton>
-                                <RadioButton IsChecked="{Binding Normal}" GroupName="SeleccionDificultad" Content="Normal" VerticalAlignment="Center"></RadioButton>
-                                <RadioButton IsChecked="{Binding Dificil}" GroupName="SeleccionDificultad" Content="Difícil" VerticalAlignment="Bottom"></RadioButton>
+                                <RadioButton x:Name="facil" IsChecked="{Binding Path=DificultadPro, Converter={StaticResource conversorDFacil}, UpdateSourceTrigger=PropertyChanged}" GroupName="SeleccionDificultad" Content="Fácil" VerticalAlignment="Top"></RadioButton>
+                                <RadioButton x:Name="normal" IsChecked="{Binding Path=DificultadPro, Converter={StaticResource conversorDNormal}, UpdateSourceTrigger=PropertyChanged}" GroupName="SeleccionDificultad" Content="Normal" VerticalAlignment="Center"></RadioButton>
+                                <RadioButton x:Name="dificil" IsChecked="{Binding Path=DificultadPro, Converter={StaticResource conversorDDificil}, UpdateSourceTrigger=PropertyChanged}" GroupName="SeleccionDificultad" Content="Difícil" VerticalAlignment="Bottom"></RadioButton>
                             </Grid>
 
-                            <ComboBox SelectedItem="{Binding GeneroPro, UpdateSourceTrigger=PropertyChanged}" x:Name="GeneroSeleccionado" DockPanel.Dock="Right" MinWidth="100" Height="25"></ComboBox>
+                            <ComboBox SelectedItem="{Binding Path=GeneroPro, UpdateSourceTrigger=PropertyChanged}" x:Name="GeneroSeleccionado" DockPanel.Dock="Right" MinWidth="100" Height="25"></ComboBox>
                             <TextBlock VerticalAlignment="Center" DockPanel.Dock="Right" Margin="10">Género</TextBlock>
                         </DockPanel>
                     </Grid>
+                    
                 </Grid>
             </TabItem>
         </TabControl>
